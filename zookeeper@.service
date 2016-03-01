@@ -4,17 +4,15 @@ Description=zookeeper
 [Service]
 Type=simple
 EnvironmentFile=/etc/environment
-Environment="TAG=3.4.5"
-Environment="ENV=test"
 ExecStart=/usr/bin/docker run --rm \
                               --name zookeeper-%i \
-                              --env ZK_SERVER_NUMBER=%i \
-                              --hostname zookeeper-%i.${ENV}.cluster.local \
-                              --dns-search ${ENV}.cluster.local \
+                              --env ZK_SERVER_NUMBER=`echo %m | head -c6` \
+                              --hostname %H \
                               --publish 2181:2181 \
                               --publish 2888:2888 \
                               --publish 3888:3888 \
-                              nordstrom/zookeeper:latest
+                              --volume /var/lib/zookeeper:/var/lib/zookeeper \
+                              makerbot/zookeeper:latest
 
 ExecStop=/usr/bin/docker stop zookeeper-%i
 
